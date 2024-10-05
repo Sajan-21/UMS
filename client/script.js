@@ -46,6 +46,28 @@ async function getUser() {
     console.log("data : ",data);
 }
 
+async function fetchAllUsers() {
+    document.getElementById("addForm").style.display = "none";
+    let queryString = window.location.search;
+    let url_params = new URLSearchParams(queryString);
+    let token_key = url_params.get("email");
+    let token = localStorage.getItem(token_key);
+    let response = await fetch('/users',{
+        method : "GET",
+        headers : {
+            'Authorization' : `Bearer ${token}`
+        },
+    });
+    let parsed_response = await response.json();
+    let users = parsed_response.data;
+    console.log(users);
+
+}
+
+async function showAddForm() {
+    document.getElementById("addForm").style.display = "block";
+}
+
 async function imageConvertion(event) {
     event.preventDefault();
   
@@ -60,6 +82,7 @@ async function imageConvertion(event) {
   
         reader.onload = function (e) {
           dataUrl = e.target.result;
+          createUser(dataUrl);
         };
   
         reader.readAsDataURL(file);
@@ -72,16 +95,21 @@ async function imageConvertion(event) {
     }
   }
 
+
 async function createUser(b64) {
     let queryString = window.location.search;
     let url_params = new URLSearchParams(queryString);
     let token_key = url_params.get("email");
     let token = localStorage.getItem(token_key);
+    let name = document.getElementById('name').value;
+    let email = document.getElementById('email').value;
+    let password = document.getElementById('password').value;
+    let user_type = document.getElementById('user_type').value;
     body = {
-        name : document.getElementById('name').value,
-        email : document.getElementById('email').value,
-        password : document.getElementById('password').value,
-        user_types : document.getElementById('user_type').value,
+        name,
+        email,
+        password,
+        user_type,
         image : b64
     }
     let str_body = JSON.stringify(body);

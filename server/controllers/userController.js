@@ -5,20 +5,29 @@ const bcrypt = require('bcryptjs');
 
 //create user
 exports.createUser = async function(req, res) {
-    let password = req.body.password;
+    let body = req.body
+    let password = body.password;
     const salt = bcrypt.genSaltSync(10);
     const hashed_password = bcrypt.hashSync(password, salt);
-    console.log("hashed : ",hashed_password);
-    req.body.password = hashed_password;
+    // console.log("hashed : ",hashed_password);
+    body.password = hashed_password;
+    let user_type = body.user_type;
+    console.log(user_type)
 
-    req.body.user_type = await user_types.findOne({user_type : req.body.user_type})._id;
+    let user_type_collection = await user_types.findOne({user_type : user_type});
+    let id = user_type_collection._id;
+    console.log(id);
+    body.user_type = id;
 
-    if(req.body.image){
-        req.body.image =  await fileUpload(req.body.image,"users");
+    // console.log(req.body.user_type)
+
+    if(body.image){
+        let image = body.image;
+        body.image =  await fileUpload(image,"users");
     }
 
     try {
-        await users.create(req.body);
+        await users.create(body);
 
         let response = success_function({
             statusCode : 200,

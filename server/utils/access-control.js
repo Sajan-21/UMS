@@ -20,7 +20,7 @@ exports.accessControl = async function (access_type, req, res, next) {
 
         }else{
 
-            let token = req.headers['authorization'].split(' ')[1];;
+            let token = req.headers['authorization'].split(' ')[1];
             console.log("token : ",token);
 
             if(!token || token === "null" || token === null || token === "undefined" || token === undefined || token === ""){

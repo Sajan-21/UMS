@@ -19,14 +19,20 @@
         <link rel="stylesheet" href="admin.css">
     </head>
 
-    <body>
+    <body onload="fetchAllUsers()">
         <header>
             <nav>
 
             </nav>
         </header>
         <main>
-            <div>
+
+            <div id="addUser">
+                <button class="btn" onclick="showAddForm()">addUser</button>
+            </div>
+
+
+            <div id="addForm">
                 <form onsubmit="imageConvertion(event)">
                     <div>
                         <label for="">name</label>
@@ -55,6 +61,14 @@
                     </div>
                 </form>
             </div>
+
+
+
+
+            <div id="getAllUsers">
+
+            </div>
+
         </main>
         <footer>
             <!-- place footer here -->
