@@ -13,7 +13,7 @@ router.post('/user',setAccessController("1"),userController.createUser);
 router.get('/users',setAccessController("1"),userController.getUsers);
 router.get('/user/:id',setAccessController("*"),userController.getUser);
 router.put('/user/:id',setAccessController("1,2"),userController.updateUser);
-router.put('/resetpassword/:id',setAccessController("2"),userController.resetPassword);
+router.put('/resetpassword/:id',setAccessController("*"),userController.resetPassword);
 router.delete('/user/:id',setAccessController("1"),userController.deleteUser);
 
 module.exports = router;

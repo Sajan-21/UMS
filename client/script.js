@@ -56,9 +56,9 @@ async function getAllUsers() {
         let rows = "";
         for(let i = 0; i < data.length; i++) {
             rows = rows + `
-            <div class="d-flex justify-content-between align-items-center rounded-pill p-2 bg-lightblue">
+            <div class="d-flex justify-content-between align-items-center rounded-pill p-1 bg-lightblue">
                 <div class="d-flex align-items-center gap-2 col">
-                    <img onclick="employeePage('${data[i]._id}','${token_key}')" src="${data[i].image}" alt="User Image" class="img-width rounded text-center rounded-circle"> <!-- Replace with actual image -->
+                    <img onclick="singleViewPage('${data[i]._id}','${token_key}')" src="${data[i].image}" alt="User Image" class="img-width rounded text-center rounded-circle"> <!-- Replace with actual image -->
                     <div class="fw-bold">${data[i].name}</div>
                 </div>
                 <div class="col text-center">${data[i].email}</div>
@@ -82,68 +82,6 @@ function addform(){
         document.getElementById('addForm').style.display = "none";
     }
 }
-
-// async function createUser(event) {
-//     event.preventDefault();
-
-//     let queryString = window.location.search;
-//     let url_params = new URLSearchParams(queryString);
-//     let token_key = url_params.get("id");
-//     let token = localStorage.getItem(token_key);
-
-//     let body;
-
-//     if(document.getElementById('image').files[0] === undefined){
-//         body = {
-//             name : document.getElementById('name').value,
-//             email : document.getElementById('email').value,
-//             user_type : document.getElementById('user_type').value,
-//         }
-//         console.log("body : ",body);
-//     }else {
-//         let file = document.getElementById('image').files[0];
-//         let dataUrl;
-//         const reader = new FileReader();
-
-//         reader.onload = function (e) {
-//             dataUrl = e.target.result;
-
-//             // Only create the body object after the dataUrl is ready
-//             body = {
-//                 name: document.getElementById('name').value,
-//                 email: document.getElementById('email').value,
-//                 user_type: document.getElementById('user_type').value,
-//                 image: dataUrl
-//             };
-
-//             console.log("body: ", body);
-//         };
-
-//         // Start reading the file as a DataURL
-//         reader.readAsDataURL(file);
-//     }
-
-//     try {
-//         let str_body = JSON.stringify(body);
-//         console.log("str_body : ",str_body);
-//         let response = await fetch('/user',{
-//             method : 'POST',
-//             headers : {
-//                 'Content-Type': 'application/json',
-//                 'Authorization' : `Bearer ${token}`
-//             },
-//             body : str_body
-//         });
-//         if(response.status === 200) {
-//             alert("user created successfully");
-//             window.location = `admin.html?id=${token_key}`;
-//         }else{
-//             alert("something went wrong");
-//         }
-//     } catch (error) {
-//         console.log("error : ",error);
-//     }
-// }
 
 async function createUser(event) {
     event.preventDefault();
@@ -194,25 +132,69 @@ async function createUser(event) {
             },
             body: str_body
         });
-
+        let parsedResponse = await response.json();
         if (response.status === 200) {
-            alert("User created successfully");
+            alert(parsedResponse.message);
             window.location = `admin.html?id=${token_key}`;
         } else {
-            alert("Something went wrong");
+            alert(parsedResponse.message);
         }
     } catch (error) {
         console.log("error:", error);
     }
 }
 
-function employeePage(user_id,token_key) {
-    window.location = `employee.html?user_id=${user_id}&id=${token_key}`
+function singleViewPage(user_id,token_key) {
+    window.location = `singleView.html?user_id=${user_id}&id=${token_key}`
 }
 
 async function getUser() {
     document.getElementById("updateForm").style.display = "none";
     document.getElementById('resetForm').style.display = "none";
+    let queryString = window.location.search;
+    let url_params = new URLSearchParams(queryString);
+    let token_key = url_params.get("id");
+    let token = localStorage.getItem(token_key);
+    let user_id = url_params.get("user_id");
+    try {
+        let response = await fetch(`user/${user_id}`,{
+            method : 'GET',
+            headers : {
+                'Authorization' : `Bearer ${token}`
+            }
+        });
+        let parsed_response = await response.json();
+        let user = parsed_response.data;
+        console.log("user : ",user);
+        let struser = JSON.stringify(user)
+        document.getElementById('user').innerHTML = `
+            <div class="d-flex align-items-center justify-content-center gap-5">
+                <div class="col">
+                    <img src="${user.image}" class="rounded img-width" alt="">
+                </div>
+                <div class="col gap-2 d-flex flex-column">
+                    <div class="fs-1 fw-bolder">
+                        ${user.name}
+                    </div>
+                    <div class="fs-3 fw-bold">
+                        ${user.email}
+                    </div>
+                    <div class="fs-3 fw-bold">
+                        ${user.user_type.user_type}
+                    </div>
+                </div>
+            </div>
+            <div class="pt-5 d-flex gap-3 justify-content-center">
+                <button onclick="editform('${user_id}')" class="bg-darkblue rounded text-light px-3 py-2">edit details</button>
+                <button onclick="passwordForm()" class="bg-dark rounded text-light px-3 py-2">reset Password</button>
+            </div>
+            `;
+    } catch (error) {
+        console.log("error : ",error);
+    }
+}
+
+async function getSingleUser() {
     let queryString = window.location.search;
     let url_params = new URLSearchParams(queryString);
     let token_key = url_params.get("id");
@@ -328,12 +310,13 @@ async function updateUser(event) {
             },
         body : str_body
         });
+        let parsed_response = await response.json();
         console.log("response : ",response);
         if(response.status === 200) {
-            alert("user updated successfully");
+            alert(parsed_response.message);
             window.location = `employee.html?user_id=${user_id}&id=${token_key}`;
         }else{
-            alert("user updation failed");
+            alert(parsed_response.message);
         }
     } catch (error) {
         console.log("error : ",error);
@@ -349,9 +332,12 @@ async function deleteUser(id,token_key) {
                 'Authorization' : `Bearer ${token}`
             }
         });
+        let parsedResponse = await response.json();
         if(response.status === 200) {
-            alert("user deleted successfully");
+            alert(parsedResponse.message);
             window.location = `admin.html?id=${token_key}`;
+        }else {
+            alert(parsedResponse.message);
         }
     } catch (error) {
         console.log("error : ",error);
@@ -368,6 +354,7 @@ async function passwordForm() {
 }
 
 async function resetPassword(event) {
+    event.preventDefault();
 
     let queryString = window.location.search;
     let url_params = new URLSearchParams(queryString);
@@ -382,7 +369,7 @@ async function resetPassword(event) {
 
     let str_body = JSON.stringify(body);
     console.log("str_body : ",str_body);
-    let response = await fetch(`/resetPassword/${user_id}`,{
+    let response = await fetch(`/resetpassword/${user_id}`,{
         method : 'PUT',
         headers : {
             'Content-Type' : 'application/json',
@@ -390,10 +377,11 @@ async function resetPassword(event) {
         },
     body : str_body
     });
+    let parsedResponse = await response.json();
     if(response === 200) {
-        alert("password reseted successfully");
+        alert(parsedResponse.message);
         window.location = `employee.html?user_id=${user_id}&id=${token_key}`;
     }else{
-        alert("something went wrong");
+        alert(parsedResponse.message);
     }
 }
