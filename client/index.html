@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <title>UMS-loginPage</title>
+        <title>ums-index</title>
         <!-- Required meta tags -->
         <meta charset="utf-8" />
         <meta
@@ -24,21 +24,19 @@
             <!-- place navbar here -->
         </header>
         <main>
-            <p class="fs-1 fw-bolder text-primary text-center p-3">Welcome to UMS (User Management System)</p>
-            <div class="container-custom p-5">
-                <form onsubmit="login(event)" class="container-custom d-flex flex-column gap-3 border border-primary rounded p-3 shadow-lg p-3 mb-5 bg-body rounded">
-                    <div class="d-flex flex-column gap-2">
-                        <label for="email">Email</label>
-                        <input type="email" name="email" id="email" class="rounded-pill border-primary p-2">
-                    </div>
-                    <div class="d-flex flex-column gap-2">
-                        <label for="password">Password</label>
-                        <input type="password" name="password" id="password" class="rounded-pill border-primary p-2">
-                    </div>
-                    <div class="text-center">
-                        <input type="submit" value="Login" class="w-25 rounded-pill bg-primary btn text-light">
-                    </div>
+            <div>
+                <form class="login-form" onsubmit="login(event)">
+                    <h2 class="text-dark fw-bolder">Login</h2>
+            
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            
+                    <input type="submit" value="login">
                 </form>
+            
             </div>
         </main>
         <footer>

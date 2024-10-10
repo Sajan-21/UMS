@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
-const userTypeShema = new mongoose.Schema({
+const user_typesSchema = new mongoose.Schema({
     user_type : {
-        type : String
+        type : String,
+        required : true
     }
 });
-
-module.exports = mongoose.model("user_types",userTypeShema);
+module.exports = mongoose.model("user_types",user_typesSchema);

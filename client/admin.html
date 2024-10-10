@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <title>UMS-Admin</title>
+        <title>UMS-admin</title>
         <!-- Required meta tags -->
         <meta charset="utf-8" />
         <meta
@@ -19,56 +19,58 @@
         <link rel="stylesheet" href="admin.css">
     </head>
 
-    <body onload="fetchAllUsers()">
+    <body onload="getAllUsers()">
         <header>
-            <nav>
-
+            <nav class="bg-light">
+                <div class="container-custom d-flex justify-content-between align-items-center py-2">
+                    <div class="fs-2 fw-bolder text-darkblue">
+                        User Management System
+                    </div>
+                    <div>
+                        <div id="accHolderImg">
+                        
+                        </div>
+                        <button class="btn bg-danger text-light">sign Out</button>
+                    </div>
+                </div>
             </nav>
         </header>
         <main>
-
-            <div id="addUser">
-                <button class="btn" onclick="showAddForm()">addUser</button>
+            <div class="container-custom py-3">
+                <button class="btn bg-success text-light" onclick="addform()">add User</button>
             </div>
-
-
             <div id="addForm">
-                <form onsubmit="imageConvertion(event)">
-                    <div>
-                        <label for="">name</label>
-                        <input type="text" name="name" id="name">
-                    </div>
-                    <div>
-                        <label for="">image</label>
-                        <input type="file" name="image" id="image">
-                    </div>
-                    <div>
-                        <label for="">email</label>
-                        <input type="email" name="email" id="email">
-                    </div>
-                    <div>
-                        <label for="">password</label>
-                        <input type="password" name="password" id="password">
-                    </div>
-                    <div>
-                        <select name="user_type" id="user_type">
-                            <option value="Admin">Admin</option>
-                            <option value="Employee">Employee</option>
-                        </select>
-                    </div>
-                    <div>
-                        <input type="submit" value="create">
-                    </div>
-                </form>
+                <div class="container-custom p-5 bg-light shadow p-3 mb-5 bg-body rounded">
+                    <form onsubmit="createUser(event)" class="container-custom d-flex flex-column gap-3">
+                        <div class="d-flex flex-column gap-2 justify-content-start class">
+                            <label for="">name</label>
+                            <input type="text" name="name" id="name" class="p-2 rounded">
+                        </div>
+                        <div class="d-flex flex-column gap-2 justify-content-start">
+                            <label for="">email</label>
+                            <input type="email" name="email" id="email" class="p-2 rounded">
+                        </div>
+                        <div class="d-flex flex-column gap-2 justify-content-start">
+                            <label for="">user_type</label>
+                            <select name="user_type" id="user_type" class="p-2 rounded">
+                                <option value="Admin">Admin</option>
+                                <option value="Employee">Employee</option>
+                            </select>
+                        </div>
+                        <div class="d-flex flex-column gap-2 justify-content-start">
+                            <label for="">image</label>
+                            <input type="file" name="image" id="image" class="p-2 rounded">
+                        </div>
+                        <div class="text-center">
+                            <input type="submit" value="create" class="border border-primary btn" id="submit">
+                        </div>
+                    </form>
+                </div>
             </div>
 
-
-
-
-            <div id="getAllUsers">
+            <div id="users" class="container-custom d-flex flex-column gap-3 py-5">
 
             </div>
-
         </main>
         <footer>
             <!-- place footer here -->

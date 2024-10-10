@@ -1,129 +1,398 @@
-
 async function login(event) {
     event.preventDefault();
-    body = {
-        email : document.getElementById('email').value,
-        password : document.getElementById('password').value
-    }
-    let str_body = JSON.stringify(body);
-    let response = await fetch('/login',{
-        method : 'POST',
-        headers : {
-            'Content-Type' : 'application/json'
-        },
-        body : str_body
-    });
-    console.log("response : ",response);
-    let parsed_response = await response.json();
-    let data = parsed_response.data;
-    let parsed_data = JSON.parse(data);
-    let token_key = parsed_data.email;
-    let token = localStorage.setItem(token_key, parsed_data.token);
-    if(parsed_data.user_type === "Admin"){
-        window.location = `admin.html?email=${token_key}`;
-    }else if(parsed_data.user_type === "Employee"){
-        window.location = `singleView.html?id=${parsed_data.id}&email=${token_key}`;
-    }else{
-        alert("something went wrong");
+    try {
+        let email = document.getElementById('email').value;
+        let password = document.getElementById('password').value;
+        let body = { email, password };
+        let str_body = JSON.stringify(body);
+        console.log("str_body : ", str_body);
+        
+        let response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: str_body
+        });
+        
+        let parsed_response = await response.json();
+        let data = parsed_response.data;
+        let token = data.token;
+        console.log("token : ", token);
+        let token_key = data.id;
+        console.log("token_key : ", token_key);
+        localStorage.setItem(token_key, token);
+        let user_id = data.id;
+        
+        if (data.user_type === "Admin") {
+            window.location = `admin.html?id=${token_key}`;
+        } else if (data.user_type === 'Employee') {
+            window.location = `employee.html?user_id=${user_id}&id=${token_key}`
+        } else {
+            alert("something went wrong");
+        }
+    } catch (error) {
+        console.log("error : ", error);
     }
 }
 
-async function getUser() {
+async function getAllUsers() {
+    document.getElementById('addForm').style.display = "none";
     let queryString = window.location.search;
     let url_params = new URLSearchParams(queryString);
-    let token_key = url_params.get("email");
-    let id = url_params.get("id");
+    let token_key = url_params.get("id");
+    let token = localStorage.getItem(token_key);
+    try {
+        let response = await fetch('/users',{
+            method : 'GET',
+            headers : {
+                'Authorization' : `Bearer ${token}`
+            },
+        });
+        let parsed_response = await response.json();
+        // console.log("parsed_response : ",parsed_response);
+        let data = parsed_response.data;
+        console.log("data : ",data);
+        let rows = "";
+        for(let i = 0; i < data.length; i++) {
+            rows = rows + `
+            <div class="d-flex justify-content-between align-items-center rounded-pill p-2 bg-lightblue">
+                <div class="d-flex align-items-center gap-2 col">
+                    <img onclick="employeePage('${data[i]._id}','${token_key}')" src="${data[i].image}" alt="User Image" class="img-width rounded text-center rounded-circle"> <!-- Replace with actual image -->
+                    <div class="fw-bold">${data[i].name}</div>
+                </div>
+                <div class="col text-center">${data[i].email}</div>
+                <div class="col text-center">${data[i].user_type.user_type}</div>
+                <div class="col text-end"><button onclick="deleteUser('${data[i]._id}','${token_key}')" class="px-3 py-2 bg-danger text-light border border-danger rounded-pill">Delete</button></div>
+            </div>
+            `;
+            document.getElementById("users").innerHTML = rows;
+        }
+    } catch (error) {
+        console.log("error : ",error);
+    }
+}
+
+let formdisplay = 0;
+function addform(){
+    formdisplay = formdisplay+1;
+    if(formdisplay%2 == !0) {
+        document.getElementById('addForm').style.display = "block";
+    }else{
+        document.getElementById('addForm').style.display = "none";
+    }
+}
+
+// async function createUser(event) {
+//     event.preventDefault();
+
+//     let queryString = window.location.search;
+//     let url_params = new URLSearchParams(queryString);
+//     let token_key = url_params.get("id");
+//     let token = localStorage.getItem(token_key);
+
+//     let body;
+
+//     if(document.getElementById('image').files[0] === undefined){
+//         body = {
+//             name : document.getElementById('name').value,
+//             email : document.getElementById('email').value,
+//             user_type : document.getElementById('user_type').value,
+//         }
+//         console.log("body : ",body);
+//     }else {
+//         let file = document.getElementById('image').files[0];
+//         let dataUrl;
+//         const reader = new FileReader();
+
+//         reader.onload = function (e) {
+//             dataUrl = e.target.result;
+
+//             // Only create the body object after the dataUrl is ready
+//             body = {
+//                 name: document.getElementById('name').value,
+//                 email: document.getElementById('email').value,
+//                 user_type: document.getElementById('user_type').value,
+//                 image: dataUrl
+//             };
+
+//             console.log("body: ", body);
+//         };
+
+//         // Start reading the file as a DataURL
+//         reader.readAsDataURL(file);
+//     }
+
+//     try {
+//         let str_body = JSON.stringify(body);
+//         console.log("str_body : ",str_body);
+//         let response = await fetch('/user',{
+//             method : 'POST',
+//             headers : {
+//                 'Content-Type': 'application/json',
+//                 'Authorization' : `Bearer ${token}`
+//             },
+//             body : str_body
+//         });
+//         if(response.status === 200) {
+//             alert("user created successfully");
+//             window.location = `admin.html?id=${token_key}`;
+//         }else{
+//             alert("something went wrong");
+//         }
+//     } catch (error) {
+//         console.log("error : ",error);
+//     }
+// }
+
+async function createUser(event) {
+    event.preventDefault();
+
+    let queryString = window.location.search;
+    let url_params = new URLSearchParams(queryString);
+    let token_key = url_params.get("id");
     let token = localStorage.getItem(token_key);
 
-    let response = await fetch(`/user/${id}`,{
+    let body;
+
+    if (document.getElementById('image').files[0] === undefined) {
+        // No image file, create body object without the image
+        body = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            user_type: document.getElementById('user_type').value,
+        };
+    } else {
+        // If image is present, read it asynchronously
+        let file = document.getElementById('image').files[0];
+
+        // Use a Promise to wait for FileReader to finish reading the file
+        body = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                resolve({
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    user_type: document.getElementById('user_type').value,
+                    image: e.target.result // DataURL of the image
+                });
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    try {
+        let str_body = JSON.stringify(body);
+        console.log("str_body:", str_body);
+
+        let response = await fetch('/user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: str_body
+        });
+
+        if (response.status === 200) {
+            alert("User created successfully");
+            window.location = `admin.html?id=${token_key}`;
+        } else {
+            alert("Something went wrong");
+        }
+    } catch (error) {
+        console.log("error:", error);
+    }
+}
+
+function employeePage(user_id,token_key) {
+    window.location = `employee.html?user_id=${user_id}&id=${token_key}`
+}
+
+async function getUser() {
+    document.getElementById("updateForm").style.display = "none";
+    document.getElementById('resetForm').style.display = "none";
+    let queryString = window.location.search;
+    let url_params = new URLSearchParams(queryString);
+    let token_key = url_params.get("id");
+    let token = localStorage.getItem(token_key);
+    let user_id = url_params.get("user_id");
+    try {
+        let response = await fetch(`user/${user_id}`,{
+            method : 'GET',
+            headers : {
+                'Authorization' : `Bearer ${token}`
+            }
+        });
+        let parsed_response = await response.json();
+        let user = parsed_response.data;
+        console.log("user : ",user);
+        let struser = JSON.stringify(user)
+        document.getElementById('user').innerHTML = `
+            <div class="d-flex align-items-center justify-content-center gap-5">
+                <div class="col">
+                    <img src="${user.image}" class="rounded img-width" alt="">
+                </div>
+                <div class="col gap-2 d-flex flex-column">
+                    <div class="fs-1 fw-bolder">
+                        ${user.name}
+                    </div>
+                    <div class="fs-3 fw-bold">
+                        ${user.email}
+                    </div>
+                    <div class="fs-3 fw-bold">
+                        ${user.user_type.user_type}
+                    </div>
+                </div>
+            </div>
+            <div class="pt-5 d-flex gap-3 justify-content-center">
+                <button onclick="editform('${user_id}')" class="bg-darkblue rounded text-light px-3 py-2">edit details</button>
+                <button onclick="passwordForm()" class="bg-dark rounded text-light px-3 py-2">reset Password</button>
+            </div>
+            `;
+    } catch (error) {
+        console.log("error : ",error);
+    }
+}
+
+async function editform(){
+    formdisplay = formdisplay+1;
+    if(formdisplay%2 == !0) {
+        document.getElementById('updateForm').style.display = "block";
+    }else{
+        document.getElementById('updateForm').style.display = "none";
+    }
+    let queryString = window.location.search;
+    let url_params = new URLSearchParams(queryString);
+    let token_key = url_params.get("id");
+    let token = localStorage.getItem(token_key);
+    let user_id = url_params.get("user_id");
+    let response = await fetch(`user/${user_id}`,{
         method : 'GET',
         headers : {
             'Authorization' : `Bearer ${token}`
         }
     });
     let parsed_response = await response.json();
-    let data = parsed_response.data;
-    console.log("data : ",data);
+    let user = parsed_response.data;
+    console.log("user : ",user);
+    document.getElementById('name').value = user.name;
+    document.getElementById('email').value = user.email;
+    document.getElementById('user_type').value = user.user_type.user_type;
 }
 
-async function fetchAllUsers() {
-    document.getElementById("addForm").style.display = "none";
-    let queryString = window.location.search;
-    let url_params = new URLSearchParams(queryString);
-    let token_key = url_params.get("email");
-    let token = localStorage.getItem(token_key);
-    let response = await fetch('/users',{
-        method : "GET",
-        headers : {
-            'Authorization' : `Bearer ${token}`
-        },
-    });
-    let parsed_response = await response.json();
-    let users = parsed_response.data;
-    console.log(users);
-
-}
-
-async function showAddForm() {
-    document.getElementById("addForm").style.display = "block";
-}
-
-async function imageConvertion(event) {
+async function updateUser(event) {
     event.preventDefault();
-  
-    try {
-      let image = document.getElementById("image");
-      let file = image.files[0];
-  
-      let dataUrl;
-  
-      if (file) {
-        const reader = new FileReader();
-  
-        reader.onload = function (e) {
-          dataUrl = e.target.result;
-          createUser(dataUrl);
-        };
-  
-        reader.readAsDataURL(file);
-      } else {
-        console.log("no file selected for image");
-      }
-      createUser(dataUrl);
-    } catch (error) {
-      console.log("error : ", error);
-    }
-  }
 
-
-async function createUser(b64) {
     let queryString = window.location.search;
     let url_params = new URLSearchParams(queryString);
-    let token_key = url_params.get("email");
+    let user_id = url_params.get("user_id");
+    let token_key = url_params.get("id");
     let token = localStorage.getItem(token_key);
-    let name = document.getElementById('name').value;
-    let email = document.getElementById('email').value;
-    let password = document.getElementById('password').value;
-    let user_type = document.getElementById('user_type').value;
-    body = {
-        name,
-        email,
-        password,
-        user_type,
-        image : b64
+
+    let body;
+
+    if(document.getElementById('image').files[0] === undefined){
+        body = {
+            name : document.getElementById('name').value,
+            email : document.getElementById('email').value,
+            user_type : document.getElementById('user_type').value,
+        }
+    }else {
+        let file = document.getElementById('image').files[0];
+
+        // Use a Promise to wait for FileReader to finish reading the file
+        body = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                resolve({
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    user_type: document.getElementById('user_type').value,
+                    image: e.target.result // DataURL of the image
+                });
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
     }
+    try {
+        let str_body = JSON.stringify(body);
+        console.log("str_body:", str_body);
+        let response = await fetch(`/user/${user_id}`,{
+            method : 'PUT',
+            headers : {
+                'Content-Type' : 'application/json',
+                'Authorization' : `Bearer ${token}`
+            },
+        body : str_body
+        });
+        console.log("response : ",response);
+        if(response.status === 200) {
+            alert("user updated successfully");
+            window.location = `employee.html?user_id=${user_id}&id=${token_key}`;
+        }else{
+            alert("user updation failed");
+        }
+    } catch (error) {
+        console.log("error : ",error);
+    }
+}
+
+async function deleteUser(id,token_key) {
+    let token = localStorage.getItem(token_key);
+    try {
+        let response = await fetch(`/user/${id}`,{
+            method : 'DELETE',
+            headers : {
+                'Authorization' : `Bearer ${token}`
+            }
+        });
+        if(response.status === 200) {
+            alert("user deleted successfully");
+            window.location = `admin.html?id=${token_key}`;
+        }
+    } catch (error) {
+        console.log("error : ",error);
+    }
+}
+
+async function passwordForm() {
+    formdisplay = formdisplay+1;
+    if(formdisplay%2 == !0) {
+        document.getElementById('resetForm').style.display = "block";
+    }else{
+        document.getElementById('resetForm').style.display = "none";
+    }
+}
+
+async function resetPassword(event) {
+
+    let queryString = window.location.search;
+    let url_params = new URLSearchParams(queryString);
+    let user_id = url_params.get("user_id");
+    let token_key = url_params.get("id");
+    let token = localStorage.getItem(token_key);
+
+    let body = {
+        currentPassword : document.getElementById('currentPassword').value,
+        newPassword : document.getElementById('newPassword').value
+    }
+
     let str_body = JSON.stringify(body);
-    let response = await fetch('/user',{
-        method : 'POST',
+    console.log("str_body : ",str_body);
+    let response = await fetch(`/resetPassword/${user_id}`,{
+        method : 'PUT',
         headers : {
+            'Content-Type' : 'application/json',
             'Authorization' : `Bearer ${token}`
         },
-        body : str_body
+    body : str_body
     });
-    let parsed_response = await response.json();
-    if(parsed_response.statusCode === 200){
-        alert("employee created successfully");
-        window.location = `admin.html?email=${token_key}`;
+    if(response === 200) {
+        alert("password reseted successfully");
+        window.location = `employee.html?user_id=${user_id}&id=${token_key}`;
     }else{
         alert("something went wrong");
     }
