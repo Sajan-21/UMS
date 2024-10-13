@@ -1,0 +1,13 @@
+.container-custom {
+    width: 80%;
+    margin: auto;
+}
+.text-darkblue{
+    color: darkblue;
+}
+.bg-lightblue{
+    background-color: lightblue;
+}
+.bg-darkblue{
+    background-color: darkblue;
+}

@@ -27,19 +27,52 @@
                         User Management System
                     </div>
                     <div>
-                        <button class="btn bg-danger text-light">sign Out</button>
+                        <button class="btn bg-danger text-light" onclick="homeBtn()">Home</button>
                     </div>
                 </div>
             </nav>
         </header>
         <main>
-            <div id="user" class="container-custom text-center shadow p-3 mb-5 bg-body rounded my-5"></div>
+            <div class="container-custom p-5">
+                <div id="user" class="container-custom text-center shadow p-3 mb-5 bg-body rounded">
+                    
+                </div>
+                <div id="updateForm">
+                    <div class="container-custom p-5 bg-light shadow p-3 mb-5 bg-body rounded">
+                        <form onsubmit="updateUser(event)" class="container-custom d-flex flex-column gap-3">
+                            <div class="d-flex flex-column gap-2 justify-content-start class">
+                                <label for="">name</label>
+                                <input type="text" name="name" id="name" class="p-2 rounded">
+                            </div>
+                            <div class="d-flex flex-column gap-2 justify-content-start">
+                                <label for="">email</label>
+                                <input type="email" name="email" id="email" class="p-2 rounded">
+                            </div>
+                            <div class="d-flex flex-column gap-2 justify-content-start">
+                                <label for="">user_type</label>
+                                <select name="user_type" id="user_type" class="p-2 rounded">
+                                    <option value="Admin">Admin</option>
+                                    <option value="Employee">Employee</option>
+                                </select>
+                            </div>
+                            <div class="d-flex flex-column gap-2 justify-content-start">
+                                <label for="">image</label>
+                                <input type="file" name="image" id="image" class="p-2 rounded">
+                            </div>
+                            <div class="text-center">
+                                <input type="submit" value="update" class="border border-primary btn" id="updateSubmit">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
         </main>
         <footer>
             <!-- place footer here -->
         </footer>
         <!-- Bootstrap JavaScript Libraries -->
-        <script src="script.js"></script>
+         <script src="script.js"></script>
         <script
             src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
             integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"

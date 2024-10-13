@@ -14,8 +14,9 @@ async function login(event) {
             },
             body: str_body
         });
-        
+        console.log("response : ",response);
         let parsed_response = await response.json();
+        console.log("parsed response : ",parsed_response);
         let data = parsed_response.data;
         let token = data.token;
         console.log("token : ", token);
@@ -23,16 +24,37 @@ async function login(event) {
         console.log("token_key : ", token_key);
         localStorage.setItem(token_key, token);
         let user_id = data.id;
-        
-        if (data.user_type === "Admin") {
-            window.location = `admin.html?id=${token_key}`;
-        } else if (data.user_type === 'Employee') {
-            window.location = `employee.html?user_id=${user_id}&id=${token_key}`
-        } else {
-            alert("something went wrong");
+
+        console.log("flag : ",data.flag);
+        if(data.flag === 1){
+            window.location = `pReset.html?user_id=${user_id}&id=${token_key}&user_type=${data.user_type}`;
+        }else {
+            if (data.user_type === "Admin") {
+                window.location = `admin.html?id=${token_key}`;
+            } else if (data.user_type === 'Employee') {
+                window.location = `employee.html?user_id=${user_id}&id=${token_key}`
+            } else {
+                alert(parsed_response.message);
+            }
         }
     } catch (error) {
         console.log("error : ", error);
+    }
+}
+
+function fReset() {
+    let queryString = window.location.search;
+    let url_params = new URLSearchParams(queryString);
+    let user_type = url_params.get("user_type");
+    let token_key = url_params.get("id");
+    let user_id = url_params.get("user_id");
+
+    if (user_type === "Admin") {
+        window.location = `admin.html?id=${token_key}`;
+    } else if (user_type === 'Employee') {
+        window.location = `employee.html?user_id=${user_id}&id=${token_key}`
+    } else {
+        alert("something went wrong");
     }
 }
 
@@ -56,9 +78,9 @@ async function getAllUsers() {
         let rows = "";
         for(let i = 0; i < data.length; i++) {
             rows = rows + `
-            <div class="d-flex justify-content-between align-items-center rounded-pill p-1 bg-lightblue">
+            <div class="d-flex justify-content-between align-items-center rounded-pill p-2 bg-lightblue">
                 <div class="d-flex align-items-center gap-2 col">
-                    <img onclick="singleViewPage('${data[i]._id}','${token_key}')" src="${data[i].image}" alt="User Image" class="img-width rounded text-center rounded-circle"> <!-- Replace with actual image -->
+                    <img onclick="getSingleUserPage('${data[i]._id}','${token_key}')" src="${data[i].image}" alt="User Image" class="img-width rounded text-center rounded-circle"> <!-- Replace with actual image -->
                     <div class="fw-bold">${data[i].name}</div>
                 </div>
                 <div class="col text-center">${data[i].email}</div>
@@ -132,19 +154,23 @@ async function createUser(event) {
             },
             body: str_body
         });
-        let parsedResponse = await response.json();
+
         if (response.status === 200) {
-            alert(parsedResponse.message);
+            alert("User created successfully");
             window.location = `admin.html?id=${token_key}`;
         } else {
-            alert(parsedResponse.message);
+            alert("Something went wrong");
         }
     } catch (error) {
         console.log("error:", error);
     }
 }
 
-function singleViewPage(user_id,token_key) {
+function employeePage(user_id,token_key) {
+    window.location = `employee.html?user_id=${user_id}&id=${token_key}`
+}
+
+function getSingleUserPage(user_id,token_key) {
     window.location = `singleView.html?user_id=${user_id}&id=${token_key}`
 }
 
@@ -195,6 +221,7 @@ async function getUser() {
 }
 
 async function getSingleUser() {
+    document.getElementById("updateForm").style.display = "none";
     let queryString = window.location.search;
     let url_params = new URLSearchParams(queryString);
     let token_key = url_params.get("id");
@@ -230,7 +257,6 @@ async function getSingleUser() {
             </div>
             <div class="pt-5 d-flex gap-3 justify-content-center">
                 <button onclick="editform('${user_id}')" class="bg-darkblue rounded text-light px-3 py-2">edit details</button>
-                <button onclick="passwordForm()" class="bg-dark rounded text-light px-3 py-2">reset Password</button>
             </div>
             `;
     } catch (error) {
@@ -310,13 +336,12 @@ async function updateUser(event) {
             },
         body : str_body
         });
-        let parsed_response = await response.json();
         console.log("response : ",response);
         if(response.status === 200) {
-            alert(parsed_response.message);
+            alert("user updated successfully");
             window.location = `employee.html?user_id=${user_id}&id=${token_key}`;
         }else{
-            alert(parsed_response.message);
+            alert("user updation failed");
         }
     } catch (error) {
         console.log("error : ",error);
@@ -332,12 +357,9 @@ async function deleteUser(id,token_key) {
                 'Authorization' : `Bearer ${token}`
             }
         });
-        let parsedResponse = await response.json();
         if(response.status === 200) {
-            alert(parsedResponse.message);
+            alert("user deleted successfully");
             window.location = `admin.html?id=${token_key}`;
-        }else {
-            alert(parsedResponse.message);
         }
     } catch (error) {
         console.log("error : ",error);
@@ -355,7 +377,6 @@ async function passwordForm() {
 
 async function resetPassword(event) {
     event.preventDefault();
-
     let queryString = window.location.search;
     let url_params = new URLSearchParams(queryString);
     let user_id = url_params.get("user_id");
@@ -369,7 +390,7 @@ async function resetPassword(event) {
 
     let str_body = JSON.stringify(body);
     console.log("str_body : ",str_body);
-    let response = await fetch(`/resetpassword/${user_id}`,{
+    let response = await fetch(`/resetPassword/${user_id}`,{
         method : 'PUT',
         headers : {
             'Content-Type' : 'application/json',
@@ -377,11 +398,27 @@ async function resetPassword(event) {
         },
     body : str_body
     });
-    let parsedResponse = await response.json();
+    let parsed_response = await response.json();
     if(response === 200) {
-        alert(parsedResponse.message);
+        alert(parsed_response.message);
         window.location = `employee.html?user_id=${user_id}&id=${token_key}`;
     }else{
-        alert(parsedResponse.message);
+        alert(parsed_response.message);
     }
+}
+
+async function signOut() {
+    let queryString = window.location.search;
+    let url_params = new URLSearchParams(queryString);
+    let token_key = url_params.get("id");
+
+    localStorage.removeItem(token_key);
+    window.location = `index.html`;
+}
+
+function homeBtn() {
+    let queryString = window.location.search;
+    let url_params = new URLSearchParams(queryString);
+    let token_key = url_params.get("id");
+    window.location = `admin.html?id=${token_key}`;
 }

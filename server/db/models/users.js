@@ -20,6 +20,9 @@ const usersSchema = new mongoose.Schema({
     },
     image : {
         type : String
+    },
+    firstLogin : {
+        type : String
     }
 });
 module.exports = mongoose.model("users",usersSchema);

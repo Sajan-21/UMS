@@ -7,6 +7,7 @@ const user_types = require('../db/models/user_types');
 dotenv.config();
 
 exports.login = async function(req, res) {
+    let fLogin = 0;
     console.log("login router correct");
     let body = req.body;
     console.log("body : ",body);
@@ -23,13 +24,26 @@ exports.login = async function(req, res) {
             if(check_password) {
                 let token = jwt.sign({user_id : user.id},process.env.PRIVATE_KEY,{expiresIn : "10d"});
                 console.log("token : ",token);
+
+                if (!user.firstLogin) {
+                    // Set first login time if it doesn't exist
+                    user.firstLogin = new Date();
+                    await user.save();
+                    fLogin ++;
+                    console.log("This is the user's first login!");
+                } else {
+                    console.log("User first logged in on: ", user.firstLogin);
+                }
+
+                console.log("flag : ",fLogin);
                 let response = success_function({
                     statusCode : 200,
                     message : "user login successfully",
                     data : {
                         token,
                         user_type : user.user_type.user_type,
-                        id : user._id
+                        id : user._id,
+                        flag : fLogin
                     }
                 });
                 res.status(response.statusCode).send(response);

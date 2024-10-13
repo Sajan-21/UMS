@@ -173,7 +173,6 @@ exports.resetPassword = async function(req, res) {
         console.log("id : ",id);
         let body = req.body;
         let user = await users.findOne({ _id: id });
-        console.log("user in reset function : ",user);
 
         if (!user) {
             let response = error_function({
@@ -191,29 +190,23 @@ exports.resetPassword = async function(req, res) {
         let compare_Current_Password = bcrypt.compareSync(currentPassword, user.password);
 
         if (compare_Current_Password) {
-            console.log("password matched");
-
             const salt = bcrypt.genSaltSync(10);
             let new_hashed_password = bcrypt.hashSync(newPassword, salt);
 
             // Update the password
-            let updatedUser = await users.updateOne({ _id: id }, { $set: { password: new_hashed_password } });
-
-            console.log("user after reset : ",updatedUser);
+            await users.updateOne({ _id: id }, { $set: { password: new_hashed_password } });
 
             let response = success_function({
                 statusCode: 200,
                 message: "Password reset successfully"
             });
             res.status(response.statusCode).send(response);
-            return;
         } else {
             let response = error_function({
                 statusCode: 400,
                 message: "Current password is not correct, try again"
             });
             res.status(response.statusCode).send(response);
-            return;
         }
     } catch (error) {
         console.log("Error: ", error);
@@ -222,7 +215,6 @@ exports.resetPassword = async function(req, res) {
             message: "An error occurred while resetting the password"
         });
         res.status(response.statusCode).send(response);
-        return;
     }
 }
 
