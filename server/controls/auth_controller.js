@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const user_types = require('../db/models/user_types');
 dotenv.config();
+const forgetPasswordTemplate = require('../utils/email-templates/forgetPassword').forgetPasswordTemplate;
+const sendEmail = require('../utils/send-email').sendEmail;
 
 exports.login = async function(req, res) {
     let fLogin = 0;
@@ -72,5 +74,35 @@ exports.login = async function(req, res) {
         });
         res.status(response.statusCode).send(response);
         return;
+    }
+}
+
+exports.forgetPassword = async function(req,res) {
+    let body = req.body;
+    let email = body.email;
+    try {
+        let user = await users.findOne(email);
+        if(user) {
+            let reset_token = jwt.sign({user_id : checkUser._id}, process.env.PRIVATE_KEY, {expiresIn : "10d"});
+            await user.updateOne({email}, {$set : {password_token}});
+            let resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${reset_token}`
+            let email_template = await forgetPasswordtemplate(user.name, resetLink);
+            await sendEmail(email, "forget password", email_template);
+            let response = success_function({
+                statusCode : 200,
+                message : "email sent successfully"
+            });
+            res.status(response.statusCode).send(response);
+            return;
+        }else{
+            let response = error_function({
+                statusCode : 400,
+                message : "user not found"
+            });
+            res.status(response.statusCode).send(response);
+            return;
+        }
+    } catch (error) {
+        // console.log("error : ",error);
     }
 }

@@ -15,6 +15,8 @@ exports.createUser = async function(req, res) {
 
         let name = body.name;
         let email = body.email;
+        let age = body.age;
+        let description = body.description;
 
         function generateRandomPassword(length) {
             let charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -54,7 +56,9 @@ exports.createUser = async function(req, res) {
                 email,
                 password : hashed_password,
                 user_type : body.user_type,
-                image
+                image,
+                age,
+                description,
             }
         }else{
             body = {
@@ -62,6 +66,8 @@ exports.createUser = async function(req, res) {
                 email,
                 password : hashed_password,
                 user_type : body.user_type,
+                age,
+                description,
             }
         }
 
@@ -125,6 +131,8 @@ exports.updateUser = async function(req, res) {
         console.log("id : ",id);
         let name = body.name;
         let email = body.email;
+        let age = body.age;
+        let description = body.description;
         let user_type = body.user_type;
         let user_type_collection = await user_types.findOne({user_type});
         user_type = user_type_collection._id;
@@ -141,12 +149,16 @@ exports.updateUser = async function(req, res) {
                 email,
                 user_type,
                 image,
+                age,
+                description,
             }
         }else{
             body = {
                 name,
                 email,
                 user_type,
+                age,
+                description,
             }
         }
         await users.updateOne({_id : id},{$set : body});
@@ -233,3 +245,4 @@ exports.deleteUser = async function(req, res) {
         console.log("error : ",error);
     }
 }
+

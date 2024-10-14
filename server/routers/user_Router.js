@@ -9,7 +9,7 @@ function setAccessController(access_type) {
     }
 }
 
-router.post('/user',setAccessController("1"),userController.createUser);
+router.post('/user',userController.createUser);
 router.get('/users',setAccessController("1"),userController.getUsers);
 router.get('/user/:id',setAccessController("*"),userController.getUser);
 router.put('/user/:id',setAccessController("1,2"),userController.updateUser);

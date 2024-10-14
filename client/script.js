@@ -208,6 +208,12 @@ async function getUser() {
                     <div class="fs-3 fw-bold">
                         ${user.user_type.user_type}
                     </div>
+                    <div class="fs-3 fw-bold">
+                        age : ${user.age}
+                    </div>
+                    <div class="fs-3 fw-bold">
+                        ${user.description}
+                    </div>
                 </div>
             </div>
             <div class="pt-5 d-flex gap-3 justify-content-center">
@@ -253,7 +259,13 @@ async function getSingleUser() {
                     <div class="fs-3 fw-bold">
                         ${user.user_type.user_type}
                     </div>
+                    <div class="fs-3 fw-bold">
+                        age : ${user.age}
+                    </div>
                 </div>
+            </div>
+            <div class="fs-5 fw-bold p-5">
+                        ${user.description}
             </div>
             <div class="pt-5 d-flex gap-3 justify-content-center">
                 <button onclick="editform('${user_id}')" class="bg-darkblue rounded text-light px-3 py-2">edit details</button>

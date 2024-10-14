@@ -23,6 +23,15 @@ const usersSchema = new mongoose.Schema({
     },
     firstLogin : {
         type : String
-    }
+    },
+    age : {
+        type : String
+    },
+    description : {
+        type : String
+    },
+    password_token : {
+        type : String
+    },
 });
 module.exports = mongoose.model("users",usersSchema);
