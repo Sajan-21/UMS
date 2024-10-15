@@ -37,7 +37,7 @@ body {
 .login-form input[type="file"] {
     padding: 5px;
 }
-.login-form input[type="submit"] {
+.login-form input[type="submit"],.forgot-btn {
     width: 50%;
     margin: auto;
     background-color: #671b00;
@@ -46,6 +46,6 @@ body {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
-.login-form input[type="submit"]:hover {
+.login-form input[type="submit"]:hover ,.forgot-btn:hover{
     background-color: #d63031;
 }

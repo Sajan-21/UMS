@@ -434,3 +434,24 @@ function homeBtn() {
     let token_key = url_params.get("id");
     window.location = `admin.html?id=${token_key}`;
 }
+
+async function emailConfirmation(event) {
+    event.preventDefault();
+    let email = document.getElementById("email");
+    try {
+        let response = await fetch('/forgotPassword',{
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/text'
+            },
+            body : email
+        });
+        let parsed_response = await response.json();
+        console.log("parsed_response : ",parsed_response);
+        if(parsed_response.statusCode === 200) {
+            alert(parsed_response.message);
+        }
+    } catch (error) {
+        console.log("error : ",error);
+    }
+}

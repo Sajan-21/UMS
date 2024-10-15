@@ -83,14 +83,14 @@ exports.forgetPassword = async function(req,res) {
     try {
         let user = await users.findOne(email);
         if(user) {
-            let reset_token = jwt.sign({user_id : checkUser._id}, process.env.PRIVATE_KEY, {expiresIn : "10d"});
-            await user.updateOne({email}, {$set : {password_token}});
-            let resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${reset_token}`
-            let email_template = await forgetPasswordtemplate(user.name, resetLink);
+            let reset_token = jwt.sign({user_id : user._id}, process.env.PRIVATE_KEY, {expiresIn : "10d"});
+            await user.updateOne({email}, {$set : {password_token : reset_token}});
+            let resetLink = `${process.env.FRONTEND_URL}?token=${reset_token}`;
+            let email_template = await forgetPasswordTemplate(user.name, resetLink);
             await sendEmail(email, "forget password", email_template);
             let response = success_function({
                 statusCode : 200,
-                message : "email sent successfully"
+                message : "check your mail and follow the instructions"
             });
             res.status(response.statusCode).send(response);
             return;
@@ -103,6 +103,43 @@ exports.forgetPassword = async function(req,res) {
             return;
         }
     } catch (error) {
-        // console.log("error : ",error);
+        console.log("error : ",error);
+        let response = error_function({
+            statusCode : 400,
+            message : error ? error.message ? error.message : error : "Something went wrong",
+          });
+          res.status(response.statusCode).send(response);
+          return;
+    }
+}
+
+exports.passwordResetController = async function(req, res) {
+    try {
+        const authHeader = req.headers["authorization"];
+        const token = authorization.split(" ")[1];
+        
+        let password = req.body.password;
+
+        decoded = jwt.decode(token);
+        let user = await users.findOne({$and : [{_id : decoded.user_id}, {password_token : token}],});
+        if(user) {
+            let salt = bcrypt.genSaltSync(10);
+            let hashed_password = bcrypt.hashSync(password, salt);
+            let data = await users.updateOne({_id : decoded.user_id},{$set : {password : hashed_password, token : null}});
+            let response = success_function({
+                statusCode : 200,
+                message : "password reseted successfully"
+            });
+            res.status(response.statusCode).send(response);
+            return;
+        }
+    } catch (error) {
+        console.log("error : ",error);
+        let response = error_function({
+            statusCode : 400,
+            message : error ? error.message ? error.message : error : "Something went wrong",
+        });
+        res.status(response.statusCode).send(response);
+        return;
     }
 }
