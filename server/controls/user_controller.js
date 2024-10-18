@@ -7,6 +7,7 @@ const { success_function, error_function } = require('../utils/response_handler'
 const email_Template = require('../utils/email-templates/setPassword').setPassword;
 const sendEmail = require('../utils/send-email').sendEmail;
 const path = require('path');
+const nodemailer = require('nodemailer');
 
 exports.createUser = async function(req, res) {
     try {
@@ -32,8 +33,8 @@ exports.createUser = async function(req, res) {
         var randomPassword = generateRandomPassword(12);
         console.log("random password : ",randomPassword);
 
-        // let email_template = await email_Template(name, email, randomPassword);
-        // await sendEmail(email, "password created", email_template);
+        let email_template = await email_Template(name, email, randomPassword);
+        await sendEmail(email, "password created", email_template);
 
         const salt = bcrypt.genSaltSync(10);
         let hashed_password = bcrypt.hashSync(randomPassword,salt);
@@ -48,7 +49,7 @@ exports.createUser = async function(req, res) {
 
         if(body.image) {
             let b64image = body.image;
-            image = await fileUpload(b64image,"users");
+            let image = await fileUpload(b64image,"users");
             console.log("image : ",image);
 
             body = {
@@ -133,9 +134,6 @@ exports.updateUser = async function(req, res) {
         let email = body.email;
         let age = body.age;
         let description = body.description;
-        let user_type = body.user_type;
-        let user_type_collection = await user_types.findOne({user_type});
-        user_type = user_type_collection._id;
 
         let splittedImage;
 
@@ -147,7 +145,6 @@ exports.updateUser = async function(req, res) {
             body = {
                 name,
                 email,
-                user_type,
                 image,
                 age,
                 description,
@@ -156,7 +153,6 @@ exports.updateUser = async function(req, res) {
             body = {
                 name,
                 email,
-                user_type,
                 age,
                 description,
             }

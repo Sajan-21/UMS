@@ -79,15 +79,18 @@ exports.login = async function(req, res) {
 
 exports.forgetPassword = async function(req,res) {
     let body = req.body;
+    console.log("body : ",body);
     let email = body.email;
+    console.log("email : ",email);
     try {
-        let user = await users.findOne(email);
+        let user = await users.findOne({email : email});
+        console.log("user : ",user);
         if(user) {
             let reset_token = jwt.sign({user_id : user._id}, process.env.PRIVATE_KEY, {expiresIn : "10d"});
             await user.updateOne({email}, {$set : {password_token : reset_token}});
             let resetLink = `${process.env.FRONTEND_URL}?token=${reset_token}`;
             let email_template = await forgetPasswordTemplate(user.name, resetLink);
-            await sendEmail(email, "forget password", email_template);
+            await sendEmail(user.email, "forget password", email_template);
             let response = success_function({
                 statusCode : 200,
                 message : "check your mail and follow the instructions"

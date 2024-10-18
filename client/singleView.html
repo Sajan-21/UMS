@@ -49,18 +49,29 @@
                                 <input type="email" name="email" id="email" class="p-2 rounded">
                             </div>
                             <div class="d-flex flex-column gap-2 justify-content-start">
-                                <label for="">user_type</label>
-                                <select name="user_type" id="user_type" class="p-2 rounded">
-                                    <option value="Admin">Admin</option>
-                                    <option value="Employee">Employee</option>
-                                </select>
-                            </div>
-                            <div class="d-flex flex-column gap-2 justify-content-start">
                                 <label for="">image</label>
                                 <input type="file" name="image" id="image" class="p-2 rounded">
                             </div>
                             <div class="text-center">
                                 <input type="submit" value="update" class="border border-primary btn" id="updateSubmit">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="resetForm">
+                    <div class="container-custom p-5 bg-light shadow p-3 mb-5 bg-body rounded">
+                        <form onsubmit="resetPassword(event)" class="container-custom d-flex flex-column gap-3">
+                            <div class="d-flex flex-column gap-2 justify-content-start class">
+                                <label for="">enter current password</label>
+                                <input type="password" name="password" id="currentPassword" class="p-2 rounded">
+                            </div>
+                            <div class="d-flex flex-column gap-2 justify-content-start class">
+                                <label for="">enter new password</label>
+                                <input type="password" name="password" id="newPassword" class="p-2 rounded">
+                            </div>
+                            <div class="text-center">
+                                <input type="submit" value="reset" class="border border-primary btn" id="resetSubmit">
                             </div>
                         </form>
                     </div>

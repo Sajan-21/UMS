@@ -85,7 +85,10 @@ async function getAllUsers() {
                 </div>
                 <div class="col text-center">${data[i].email}</div>
                 <div class="col text-center">${data[i].user_type.user_type}</div>
-                <div class="col text-end"><button onclick="deleteUser('${data[i]._id}','${token_key}')" class="px-3 py-2 bg-danger text-light border border-danger rounded-pill">Delete</button></div>
+                <div class="col text-end">
+                <button onclick="getSingleUserPage('${data[i]._id}','${token_key}')" class="px-3 py-2 bg-primary text-light border border-primary rounded-pill">View</button>
+                <button onclick="deleteUser('${data[i]._id}','${token_key}')" class="px-3 py-2 bg-danger text-light border border-danger rounded-pill">Delete</button>
+                </div>
             </div>
             `;
             document.getElementById("users").innerHTML = rows;
@@ -228,6 +231,7 @@ async function getUser() {
 
 async function getSingleUser() {
     document.getElementById("updateForm").style.display = "none";
+    document.getElementById('resetForm').style.display = "none";
     let queryString = window.location.search;
     let url_params = new URLSearchParams(queryString);
     let token_key = url_params.get("id");
@@ -264,11 +268,9 @@ async function getSingleUser() {
                     </div>
                 </div>
             </div>
-            <div class="fs-5 fw-bold p-5">
-                        ${user.description}
-            </div>
             <div class="pt-5 d-flex gap-3 justify-content-center">
                 <button onclick="editform('${user_id}')" class="bg-darkblue rounded text-light px-3 py-2">edit details</button>
+                <button onclick="passwordForm()" class="bg-dark rounded text-light px-3 py-2">reset Password</button>
             </div>
             `;
     } catch (error) {
@@ -299,7 +301,6 @@ async function editform(){
     console.log("user : ",user);
     document.getElementById('name').value = user.name;
     document.getElementById('email').value = user.email;
-    document.getElementById('user_type').value = user.user_type.user_type;
 }
 
 async function updateUser(event) {
@@ -317,7 +318,6 @@ async function updateUser(event) {
         body = {
             name : document.getElementById('name').value,
             email : document.getElementById('email').value,
-            user_type : document.getElementById('user_type').value,
         }
     }else {
         let file = document.getElementById('image').files[0];
@@ -329,7 +329,6 @@ async function updateUser(event) {
                 resolve({
                     name: document.getElementById('name').value,
                     email: document.getElementById('email').value,
-                    user_type: document.getElementById('user_type').value,
                     image: e.target.result // DataURL of the image
                 });
             };
@@ -437,14 +436,18 @@ function homeBtn() {
 
 async function emailConfirmation(event) {
     event.preventDefault();
-    let email = document.getElementById("email");
+    let body = {
+        email : document.getElementById("email").value
+    }
+    str_body = JSON.stringify(body);
+    console.log("str_body : ",str_body);
     try {
         let response = await fetch('/forgotPassword',{
             method : 'POST',
             headers : {
-                'Content-Type' : 'application/text'
+                'Content-Type' : 'application/json'
             },
-            body : email
+            body : str_body
         });
         let parsed_response = await response.json();
         console.log("parsed_response : ",parsed_response);

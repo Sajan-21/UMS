@@ -27,9 +27,6 @@ const usersSchema = new mongoose.Schema({
     age : {
         type : String
     },
-    description : {
-        type : String
-    },
     password_token : {
         type : String
     },
