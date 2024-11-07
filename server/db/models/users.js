@@ -1,34 +1,32 @@
 const mongoose = require('mongoose');
-const user_types = require('./user_types');
+const user_types = require('../models/user-types');
 
-const usersSchema = new mongoose.Schema({
+const usersScheme = new mongoose.Schema({
     name : {
-        type : String,
-        required : true
+        type : String
     },
     email : {
-        type : String,
-        required : true
+        type : String
     },
     password : {
-        type : String,
-        required : true
+        type : String
+    },
+    age : {
+        type : Number
     },
     user_type : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "user_types"
     },
+    reset_password_count : {
+        type : Number
+    },
+    login_count : {
+        type : Number
+    },
     image : {
         type : String
-    },
-    firstLogin : {
-        type : String
-    },
-    age : {
-        type : String
-    },
-    password_token : {
-        type : String
-    },
+    }
 });
-module.exports = mongoose.model("users",usersSchema);
+
+module.exports = mongoose.model("users",usersScheme);

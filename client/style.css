@@ -1,51 +1,20 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f7f1e3;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+* {
+    padding: 0;
     margin: 0;
 }
-.login-form {
-    background-color: #ff6348;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    width: 350px;
-    color: white;
+
+body {
+    background-image: url('./images/videoblocks-holiday-background-glowing-particles-on-dark-background_rbg1r8ah6s_thumbnail-180_06.jpg');
+    background-size: cover;
+    height: 100vh;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 100;
+    display: flex;
+    overflow: hidden;
 }
-.login-form h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #ff4500;
+.inputs{
+    background: none;
 }
-.login-form label {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 14px;
-}
-.login-form input, 
-.login-form select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-}
-.login-form input[type="file"] {
-    padding: 5px;
-}
-.login-form input[type="submit"],.forgot-btn {
-    width: 50%;
-    margin: auto;
-    background-color: #671b00;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-.login-form input[type="submit"]:hover ,.forgot-btn:hover{
-    background-color: #d63031;
+.form{
+    width: 30vw;
 }

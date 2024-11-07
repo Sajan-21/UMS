@@ -1,7 +1,7 @@
 {
   "development": {
     "database": {
-      "url": "mongodb://localhost:27017/UMS",
+      "url": "mongodb://localhost:27017/ums",
       "options": {
         "useNewUrlParser": true
       }
@@ -9,7 +9,7 @@
   },
   "test": {
     "database": {
-      "url": "mongodb://localhost:27017/UMS",
+      "url": "mongodb://localhost:27017/ums",
       "options": {
         "useNewUrlParser": true
       }

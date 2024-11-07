@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <title>UMS-employee</title>
+        <title>emoloyee</title>
         <!-- Required meta tags -->
         <meta charset="utf-8" />
         <meta
@@ -19,66 +19,79 @@
         <link rel="stylesheet" href="employee.css">
     </head>
 
-    <body class="bg-lightblue" onload="getUser()">
+    <body onload="employee()">
         <header>
-            <nav class="bg-light">
-                <div class="container-custom d-flex justify-content-between align-items-center py-2">
-                    <div class="fs-2 fw-bolder text-darkblue">
-                        User Management System
-                    </div>
-                    <div>
-                        <button class="btn bg-danger text-light" onclick="signOut()">sign Out</button>
-                    </div>
-                </div>
+            <nav class="d-flex justify-content-between p-3 navbar mb-5">
+                <div class="text-light fs-2">Reliance</div>
+                <button onclick="logout()" class="bg-secondary px-3 rounded py-2 text-light">Log Out</button>
             </nav>
         </header>
         <main>
-            <div class="container-custom p-5">
-                <div id="user" class="container-custom text-center shadow p-3 mb-5 bg-body rounded">
+            <div class="container d-flex justify-content-center align-items-center rounded border bg-img p-3">
+                <div class="col-4 position-sticky" id="features">
+                    <ul class="list-inline d-flex flex-column gap-5">
+                        <li onclick="profile()" class="d-flex align-items-center bg-light rounded list-inline-item d-flex justify-content-center gap-3 shadow p-3 w-75">
+                            <div id="dispayProfilePic" class="col-6 text-end"></div>
+                            <div id="dispayProfileName" class="col-6 text-start"></div>
+                        </li>
+                        <li onclick="updateForm()" class="bg-light rounded list-inline-item shadow p-3 w-75 text-center">update profile</li>
+                        <li onclick="resetForm()" class="bg-light rounded list-inline-item shadow p-3 w-75 text-center">reset password</li>
+                    </ul>
+                </div>
+                <div class="col-8 bg-smoke">
+                    <div id="profile">
+                        <div id="profile-details" class="bg-light text-center p-3 shadow rounded d-flex flex-column gap-3">
+
+                        </div>
+                    </div>
+                    
+                        <div id="updateForm">
+                            <div class="p-5 bg-light shadow p-3 bg-body rounded update-div">
+                                <form onsubmit="updateUser(event)" class="d-flex flex-column gap-3">
+                                    <h4 class="text-center">Update your profile</h4>
+                                    <div class="d-flex flex-column gap-2 align-items-center class">
+                                        <label for="" class="text-start">name</label>
+                                        <input type="text" name="name" id="name" class="w-75 p-2 rounded">
+                                    </div>
+                                    <div class="d-flex flex-column gap-2 align-items-center">
+                                        <label for="" class="text-start">email</label>
+                                        <input type="email" name="email" id="email" class="w-75 p-2 rounded">
+                                    </div>
+                                    <div class="d-flex flex-column gap-2 align-items-center">
+                                        <label for="" class="text-start">age</label>
+                                        <input type="number" name="age" id="age" class="w-75 p-2 rounded">
+                                    </div>
+                                    <div class="d-flex flex-column gap-2 align-items-center">
+                                        <label for="">image</label>
+                                        <input type="file" name="image" id="image" class="p-2 rounded">
+                                    </div>
+                                    <div class="text-center">
+                                        <input type="submit" value="update" class="border border-primary btn" id="updateSubmit">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    
+                    
+                        <div id="pResetForm">
+                            <div class="p-5 bg-light shadow p-3 bg-body rounded update-div">
+                                <form onsubmit="resetPassword(event)" class="rounded d-flex flex-column justify-content-center align-items-center gap-3">
+                                    <h4>Reset your password</h4>
+                                    <div id="currnetPassword-warning" class="text-start text-danger"></div>
+                                    <input type="password" name="currentPassword" id="currentPassword" placeholder="Enter currnet Password" class="w-75 rounded p-2">
+                                    <div id="newPassword-warning" class="text-start text-danger"></div>
+                                    <input type="password" id="newPassword" placeholder="Enter new Password" class="w-75 rounded p-2">
+                                    <div id="confirmPassword-warning" class="text-start text-danger"></div>
+                                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" class="w-75 rounded p-2">
+                                    <div>
+                                        <input type="submit" value="submit" class="bg-primary text-light border-0 px-3 py-2 rounded" id="submitButton">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     
                 </div>
-                <div id="updateForm">
-                    <div class="container-custom p-5 bg-light shadow p-3 mb-5 bg-body rounded">
-                        <form onsubmit="updateUser(event)" class="container-custom d-flex flex-column gap-3">
-                            <div class="d-flex flex-column gap-2 justify-content-start class">
-                                <label for="">name</label>
-                                <input type="text" name="name" id="name" class="p-2 rounded">
-                            </div>
-                            <div class="d-flex flex-column gap-2 justify-content-start">
-                                <label for="">email</label>
-                                <input type="email" name="email" id="email" class="p-2 rounded">
-                            </div>
-                            <div class="d-flex flex-column gap-2 justify-content-start">
-                                <label for="">image</label>
-                                <input type="file" name="image" id="image" class="p-2 rounded">
-                            </div>
-                            <div class="text-center">
-                                <input type="submit" value="update" class="border border-primary btn" id="updateSubmit">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <div id="resetForm">
-                    <div class="container-custom p-5 bg-light shadow p-3 mb-5 bg-body rounded">
-                        <form onsubmit="resetPassword(event)" class="container-custom d-flex flex-column gap-3">
-                            <div class="d-flex flex-column gap-2 justify-content-start class">
-                                <label for="">enter current password</label>
-                                <input type="password" name="password" id="currentPassword" class="p-2 rounded">
-                            </div>
-                            <div class="d-flex flex-column gap-2 justify-content-start class">
-                                <label for="">enter new password</label>
-                                <input type="password" name="password" id="newPassword" class="p-2 rounded">
-                            </div>
-                            <div class="text-center">
-                                <input type="submit" value="reset" class="border border-primary btn" id="resetSubmit">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
             </div>
-
         </main>
         <footer>
             <!-- place footer here -->

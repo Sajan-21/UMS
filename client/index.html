@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <title>ums-index</title>
+        <title>ums-login/signUp</title>
         <!-- Required meta tags -->
         <meta charset="utf-8" />
         <meta
@@ -19,26 +19,28 @@
         <link rel="stylesheet" href="style.css">
     </head>
 
-    <body>
+    <body class="d-flex justify-content-center align-items-center">
         <header>
             <!-- place navbar here -->
         </header>
-        <main>
-            <div>
-                <form class="login-form" onsubmit="login(event)">
-                    <h2 class="text-dark fw-bolder">Login</h2>
-            
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your email">
-            
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password">
-
-                    <button class="rounded mb-2 forgot-btn"><a href="forgotPassword-emailConfirmation.html" class="text-light text-decoration-none">forgot password ?</a></button>
-            
-                    <input type="submit" value="login">
+        <main class="">
+            <div class="">
+                <form onsubmit="login(event)" class="d-flex flex-column gap-5 form">
+                    <div class="d-flex flex-column justify-content-center">
+                        <label for="email" class="text-light">Enter email</label>
+                        <input type="email" name="email" id="email" class="inputs border-danger border-top-0 border-start-0 border-end-0 text-light p-2">
+                    </div>
+                    <div class="d-flex flex-column justify-content-center">
+                        <label for="password" class="text-light">Enter password</label>
+                        <input type="password" name="password" id="password" class="inputs border-danger border-top-0 border-start-0 border-end-0 text-light p-2">
+                    </div>
+                    <div class="text-center">
+                        <a href="#" class="text-light">forgot password?</a>
+                    </div>
+                    <div class="text-center">
+                        <input type="submit" value="Login" id="submit" class="rounded-pill px-3 py-2 text-light border-0 bg-danger">
+                    </div>
                 </form>
-            
             </div>
         </main>
         <footer>

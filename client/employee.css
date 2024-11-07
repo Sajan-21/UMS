@@ -1,6 +1,9 @@
-.container-custom {
-    width: 80%;
-    margin: auto;
+*{
+    padding: 0%;
+    margin: 0%;
+}
+.navbar{
+    background-color: rgb(0, 53, 39);
 }
 .text-darkblue{
     color: darkblue;
@@ -11,7 +14,15 @@
 .bg-darkblue{
     background-color: darkblue;
 }
-.img-width{
-    width: 300px;
-    height: 300px;
+.feature-div{
+    height: 30vh;
+}
+.bg-img{
+    height: 80vh;
+    background-image: url('./images/desktop-wallpaper-website-backgrounds-login-page.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.bg-smoke{
+    background-color: rgb(209, 209, 209);
 }

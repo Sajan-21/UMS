@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <title>UMS-singleView</title>
+        <title>ums-singleView</title>
         <!-- Required meta tags -->
         <meta charset="utf-8" />
         <meta
@@ -19,64 +19,22 @@
         <link rel="stylesheet" href="singleView.css">
     </head>
 
-    <body class="bg-lightblue" onload="getSingleUser()">
+    <body onload="getUser()">
         <header>
-            <nav class="bg-light">
-                <div class="container-custom d-flex justify-content-between align-items-center py-2">
-                    <div class="fs-2 fw-bolder text-darkblue">
-                        User Management System
-                    </div>
-                    <div>
-                        <button class="btn bg-danger text-light" onclick="homeBtn()">Home</button>
-                    </div>
-                </div>
+            <nav class="d-flex justify-content-between p-3 navbar mb-5">
+                <div class="text-light fs-2">Reliance</div>
+                <div id="admin-short-profile"></div>
             </nav>
         </header>
         <main>
-            <div class="container-custom p-5">
-                <div id="user" class="container-custom text-center shadow p-3 mb-5 bg-body rounded">
-                    
-                </div>
-                <div id="updateForm">
-                    <div class="container-custom p-5 bg-light shadow p-3 mb-5 bg-body rounded">
-                        <form onsubmit="updateUser(event)" class="container-custom d-flex flex-column gap-3">
-                            <div class="d-flex flex-column gap-2 justify-content-start class">
-                                <label for="">name</label>
-                                <input type="text" name="name" id="name" class="p-2 rounded">
-                            </div>
-                            <div class="d-flex flex-column gap-2 justify-content-start">
-                                <label for="">email</label>
-                                <input type="email" name="email" id="email" class="p-2 rounded">
-                            </div>
-                            <div class="d-flex flex-column gap-2 justify-content-start">
-                                <label for="">image</label>
-                                <input type="file" name="image" id="image" class="p-2 rounded">
-                            </div>
-                            <div class="text-center">
-                                <input type="submit" value="update" class="border border-primary btn" id="updateSubmit">
-                            </div>
-                        </form>
+            <div class="container d-flex justify-content-center align-items-center rounded border bg-img p-3">
+                <div class="col-8 bg-smoke">
+                    <div id="profile">
+                        <div id="profile-details" class="bg-light text-center p-3 shadow rounded d-flex flex-column gap-3">
+
+                        </div>
                     </div>
                 </div>
-
-                <div id="resetForm">
-                    <div class="container-custom p-5 bg-light shadow p-3 mb-5 bg-body rounded">
-                        <form onsubmit="resetPassword(event)" class="container-custom d-flex flex-column gap-3">
-                            <div class="d-flex flex-column gap-2 justify-content-start class">
-                                <label for="">enter current password</label>
-                                <input type="password" name="password" id="currentPassword" class="p-2 rounded">
-                            </div>
-                            <div class="d-flex flex-column gap-2 justify-content-start class">
-                                <label for="">enter new password</label>
-                                <input type="password" name="password" id="newPassword" class="p-2 rounded">
-                            </div>
-                            <div class="text-center">
-                                <input type="submit" value="reset" class="border border-primary btn" id="resetSubmit">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
             </div>
         </main>
         <footer>

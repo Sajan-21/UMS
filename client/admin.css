@@ -1,14 +1,19 @@
-.container-custom {
-    width: 80%;
-    margin: auto;
+*{
+    padding: 0%;
+    margin: 0%;
 }
-.text-darkblue{
-    color: darkblue;
+.navbar{
+    background-color: rgb(0, 53, 39);
 }
-.bg-lightblue{
-    background-color: lightblue;
+.border-custom{
+    border-bottom: 1px solid rgb(161, 161, 161);
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
 }
-.img-width{
-    width: 70px;
-    height: 70px;
+.bg-white{
+    background-color: white;
+}
+.profile-pic{
+    width: 10%;
 }

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <title>UMS-admin</title>
+        <title>Admin</title>
         <!-- Required meta tags -->
         <meta charset="utf-8" />
         <meta
@@ -21,56 +21,40 @@
 
     <body onload="getAllUsers()">
         <header>
-            <nav class="bg-light">
-                <div class="container-custom d-flex justify-content-between align-items-center py-2">
-                    <div class="fs-2 fw-bolder text-darkblue">
-                        User Management System
-                    </div>
-                    <div>
-                        <div id="accHolderImg">
-                        
-                        </div>
-                        <button class="btn bg-danger text-light" onclick="signOut()">sign Out</button>
-                    </div>
+            <nav class="d-flex justify-content-between p-3 navbar">
+                <div class="text-light fs-2">ABC Private.limited</div>
+                <div class="d-flex align-items-center gap-5">
+                    <div id="admin-profile" class="d-flex gap-2 align-items-center"></div>
+                    <button onclick="logout()" class="bg-secondary px-3 rounded py-2 text-light">Log Out</button>
                 </div>
             </nav>
-        </header>
-        <main>
-            <div class="container-custom py-3">
-                <button class="btn bg-success text-light" onclick="addform()">add User</button>
+            <div class="container d-flex justify-content-between p-3 align-items-center">
+                <div class="fs-3 fw-bolder">User Management System</div>
+                <div>
+                    <button class="border-rounded bg-warning border-0 px-3 py-2" onclick="displayAddForm()">Add user</button>
+                </div>
             </div>
+        </header>
+        <main class="d-flex flex-column gap-5">
             <div id="addForm">
-                <div class="container-custom p-5 bg-light shadow p-3 mb-5 bg-body rounded">
-                    <form onsubmit="createUser(event)" class="container-custom d-flex flex-column gap-3">
-                        <div class="d-flex flex-column gap-2 justify-content-start class">
-                            <label for="">name</label>
-                            <input type="text" name="name" id="name" class="p-2 rounded">
-                        </div>
-                        <div class="d-flex flex-column gap-2 justify-content-start">
-                            <label for="">email</label>
-                            <input type="email" name="email" id="email" class="p-2 rounded">
-                        </div>
-                        <div class="d-flex flex-column gap-2 justify-content-start">
-                            <label for="">user_type</label>
-                            <select name="user_type" id="user_type" class="p-2 rounded">
-                                <option value="Admin" disabled>Admin</option>
-                                <option value="Employee">Employee</option>
-                            </select>
-                        </div>
-                        <div class="d-flex flex-column gap-2 justify-content-start">
-                            <label for="">image</label>
-                            <input type="file" name="image" id="image" class="p-2 rounded">
-                        </div>
-                        <div class="text-center">
-                            <input type="submit" value="create" class="border border-primary btn" id="submit">
+                <div class="d-flex justify-content-center">
+                    <form onsubmit="addUser(event)" class="shadow w-50 p-3 rounded d-flex flex-column justify-content-center align-items-center gap-3">
+                        <h4>Add user details</h4>
+                        <div id="name-warning" class="text-start text-danger"></div>
+                        <input type="text" name="name" id="name" placeholder="Enter name" class="w-50 rounded p-2">
+                        <div id="email-warning" class="text-start text-danger"></div>
+                        <input type="email" id="email" placeholder="Enter email address" class="w-50 rounded p-2">
+                        <div id="age-warning" class="text-start text-danger"></div>
+                        <input type="number" id="age" name="age" placeholder="Enter age" class="w-50 rounded p-2">
+                        <label for="">image</label>
+                        <input type="file" name="image" id="image" class="p-2 rounded">
+                        <div>
+                            <input type="submit" value="submit" class="bg-primary text-light border-0 px-3 py-2 rounded" id="submitButton">
                         </div>
                     </form>
                 </div>
             </div>
-
-            <div id="users" class="container-custom d-flex flex-column gap-3 py-5">
-
-            </div>
+            <div id="usersContainer" class="container p-5 bg-light rounded d-flex flex-column gap-3"></div>
         </main>
         <footer>
             <!-- place footer here -->
